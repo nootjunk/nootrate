@@ -1,0 +1,39 @@
+<%- model_class = Rating -%>
+<% subject = Subject.find_by(id: @rating.subject_id) %>
+<% tag = Tag.find_by(id: @rating.tag_id) %>
+<div class='ui grid'>
+  <div class='sixteen wide column'>
+    <div class="ui segment">
+        <h1 align='center'>Rating for <%= subject.link %> / <%= tag.link %></h1>
+
+        <strong>Subject:</strong> <%= subject.name %>
+        <br>
+        <%= subject.description.html_safe %>
+        <br>
+        <br>
+        <strong>Tag:</strong> <%= tag.name %>
+        <br>
+        <%= tag.description.html_safe %>
+        <br>
+        <br>
+        <strong>Rating</strong>
+        <br>
+        Average: <%= "#{@rating.average}% based on #{@rating.votes} vote(s)." %>
+        <br>
+        <br>
+
+        <% total_votes = @rating.cached_votes_total %>
+        
+        <% for i in 0..4 do %>
+            <% votes = Vote.where(votable_type: :Rating, votable_id: @rating, vote_weight: i).size %>
+            <% vote_scale = true ? i * 25 : votes == 0 ? 0 : (votes.to_f / total_votes.to_f) * 100 %>
+
+            <%= "#{i}: #{i * 25}% based on #{i * 100} vote(s)" %><br>
+          <% end %>
+    </div>
+
+    <div class="ui segment">
+      <%= render 'form_comment' %>
+      <%= render 'comment_list' %>
+    </div>
+</div>

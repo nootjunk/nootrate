@@ -1,0 +1,15 @@
+<table>
+  <thead>
+    <tr>
+      <th>Comment</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @rating_comments.each do |comment| %>
+      <tr>
+        <td><%= comment.link %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

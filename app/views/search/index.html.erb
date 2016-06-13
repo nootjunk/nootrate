@@ -1,0 +1,28 @@
+<div class="ui grid">
+
+	<div class="four wide column">
+		<% count = @subjects.length == 0 ? 'No' : @subjects.length %>
+		<strong><%= "#{count} subjects found" %></strong><br><br>
+		<% @subjects.each do |subject| %>
+			<%= subject.link %><br>
+		<% end %>
+	</div>
+
+	<div class="four wide column">
+		<% count = @tags.length == 0 ? 'No' : @tags.length %>
+		<strong><%= "#{count} tags found" %></strong><br><br>
+		<% @tags.each do |tag| %>
+			<%= tag.link %><br>
+		<% end %>
+	</div>
+
+	<div class="eight wide column">
+		<% count = @comments.length == 0 ? 'No' : @comments.length %>
+		<strong><%= "#{count} comments found" %></strong><br><br>
+		<% @comments.each do |comment| %>
+			<%= comment.rating_link %><br>
+			<%= comment.comment %><br><br>
+		<% end %>
+	</div>
+
+</div>

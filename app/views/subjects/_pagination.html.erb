@@ -1,0 +1,22 @@
+<div class="ui small pagination borderless menu">
+  <% m = (subject_list.length-1) / 10 %>
+  <% p_min = [page - 2, 1].max %>
+  <% p_max = [page + 2, m].min %>
+
+  <%= link_to '<', subjects_path(page: page - 1, :alpha => alpha, :allany => :and, :tags => tag_filter_string), class: page <= 1 ? "item disabled" : "item" %>
+  <%= link_to '>', subjects_path(page: page + 1, :alpha => alpha, :allany => :and, :tags => tag_filter_string), class: page >= m ? "item disabled" : "item" %>
+
+  <% if p_min > 1 %>
+    <%= link_to '1', subjects_path(page: 1, :alpha => alpha, :allany => :and, :tags => tag_filter_string), class: "item" %> 
+    <%= link_to '...', '', class: "item disabled" %>
+  <% end %>
+
+  <% (p_min..p_max).each do |i| %>
+    <%= link_to i.to_s, subjects_path(page: i, :alpha => alpha, :allany => :and, :tags => tag_filter_string), class: page == i ? "item active" : "item" %> 
+  <% end %>
+
+  <% if p_max < m %>
+    <%= link_to '...', '', class: "item disabled" %>
+    <%= link_to m, subjects_path(page: m, :alpha => alpha, :allany => :and, :tags => tag_filter_string), class: "item" %> 
+  <% end %>
+</div>

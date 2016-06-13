@@ -1,0 +1,27 @@
+<%= form_for @rating, :html => { :class => 'form-horizontal form-model' } do |f| %>
+
+<% @subject = Subject.where(name: params[:subject]) %>
+<% @tag = Tag.where(name: params[:tag]) %>
+
+<div class="form-group">
+    <%= f.label :subject_id, :class => 'control-label col-md-2' %>
+    <div class="col-md-10">
+      <%= f.collection_select :subject_id, Subject.order(:name),:id,:name, {:selected => @subject.empty? ? 0 : @subject.first.id}, :class => "dropdown form-control" %>
+    </div>
+  </div>
+  <div class="form-group">
+
+    <%= f.label :tag_id, :class => 'control-label col-md-2' %>
+    <div class="col-md-10">
+      <%= f.collection_select :tag_id, Tag.order(:name),:id,:name, {:selected => @tag.empty? ? 0 : @tag.first.id}, :class => "dropdown form-control" %>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <div class='col-md-offset-2 col-md-10'>
+      <%= f.submit nil, :class => 'btn btn-primary' %>
+      <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                  tags_path, :class => 'btn btn-default' %>
+    </div>
+  </div>
+<% end %>

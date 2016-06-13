@@ -1,0 +1,22 @@
+<h1 align='center'>Add new Tag</h1>
+
+<%= simple_form_for(Tag.new) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="ui form">
+
+    <div class="field">
+      <%= f.input :name %>
+    </div>
+
+    <div class="field">
+      <%= f.input :description %>
+    </div>
+
+    <%= button_tag(type: :submit, :class => "ui blue labeled submit icon button") do %>
+      <i class='icon idea'></i> Create
+    <% end %>  
+
+  </div>
+
+<% end %>

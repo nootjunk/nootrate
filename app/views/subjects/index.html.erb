@@ -1,0 +1,86 @@
+<%- model_class = Subject -%>
+<% alpha = params.has_key?(:alpha) ? (("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".include? params[:alpha]) ? params[:alpha] : "") : "" %>
+<% sorton = params.has_key?(:sorton) ? ((['subject', 'vote'].member? params[:sorton]) ? params[:sorton] : 'tag_name') : 'tag_name' %>
+<% tags = params.has_key?(:tags) ? params[:tags].split(%r{,\s*}).map(&:to_i) : [] %>
+
+<div class='ui grid'>
+  <div class='eight wide column'>
+
+    <table class="ui table compact">
+      <tbody>
+
+        <% if !params.has_key?(:tags) or params[:tags].blank? %>
+          <% subjects = Rating.select('subject_id')
+          .where(alpha == '' ? '' : "lower(subject_name) LIKE '#{alpha.downcase}%'")
+          .group(:subject_id)
+          .includes(:subject)
+          %>
+        <% elsif params.has_key?(:allany) and params[:allany] == 'all' %>
+          <% subjects = Rating.select('subject_id')
+          .where(alpha == '' ? '' : "lower(subject_name) LIKE '#{alpha.downcase}%'")
+          .where(tag_id: tags)
+          .group(:subject_id)
+          .having("count(tag_id) = #{tags.size}")
+          .includes(:subject)
+          %>
+        <% else %>
+          <% subjects = Rating.select('subject_id')
+          .where(alpha == '' ? '' : "lower(subject_name) LIKE '#{alpha.downcase}%'")
+          .where(tag_id: tags)
+          .group(:subject_id)
+          .includes(:subject)
+          %>
+        <% end %>
+
+        <% subjects.each_with_index do |subject, index| %>
+        <tr>
+          <td><span class="ui gray circular label"><%= index + 1 %></span></td>
+          <td>
+            <%= subject.subject.link %><br>
+            <%= subject.subject.description %>
+          </td>
+
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class='eight wide column'>
+    <div class="ui segment"  align='justify'>
+
+      <h1>Starts with</h1>
+      <%= link_to_if params.has_key?(:alpha), 'all', subjects_path(:allany => params[:allany], :tags => tags.join(',')) %>
+
+      <% "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".each_char { |c| %>
+        <%= link_to_if !(params.has_key?(:alpha) && params[:alpha] == c), c, subjects_path(:alpha => c, :allany => params[:allany], :tags => tags.join(',')) %>
+      <% } %>
+
+      <h1 class="right floated">Filter by</h1>
+      <div style='line-height: 200%;'>
+        <% Rating.select('tag_id as id, tag_name as name, COUNT(subject_id) as count').group(:tag_id).all.each do |tag| %>
+          <% if tags.include?(tag.id) %>
+            <a class="ui image tiny blue label" href= <%= subjects_path(:alpha => params[:alpha], :allany => params[:allany], :tags => (tags - [tag.id]).join(',')) %> >
+          <% else %>
+            <a class="ui image tiny gray label" href= <%= subjects_path(:alpha => params[:alpha], :allany => params[:allany], :tags => (tags + [tag.id]).join(',')) %> >
+          <% end %>
+
+            <%= tag.name %><div class="detail"><%= tag.count %></div>
+            </a>
+        <% end %>
+      </div>
+
+      <% if params.has_key?(:tags) and params[:tags] != '' %>
+        <h1 class="right floated">Mode</h1>
+        <div class="ui buttons">
+          <% active = params.has_key?(:allany) && params[:allany] == 'all' %>
+          <% active_class = active ? 'disabled positive' : '' %>
+          <%= link_to "Has all tags", subjects_path(:alpha => params[:alpha], :allany => :all, :tags => tags.join(',')),  :class => "ui button #{active_class}", :title => 'List subjects that contain all selected tags.' %>
+          <div class="or"></div>
+          <% active_class = !active ? 'disabled positive' : '' %>
+          <%= link_to "Has any tag", subjects_path(:alpha => params[:alpha], :allany => :any, :tags => tags.join(',')), :class => "ui button #{active_class}", :title => 'List subjects that contain at least one selected tag.' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

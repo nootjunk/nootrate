@@ -1,0 +1,23 @@
+<%= simple_form_for(@comment) do |f| %>
+	<%= f.error_notification %>
+
+	<div class="ui form">
+
+		<div class="field">
+			<%= f.input :comment %>
+		</div>
+		
+		<%= f.hidden_field :rating_id, :value => @rating.id %>
+		<%= f.hidden_field :tag_id, :value => @rating.tag_id %>
+		<%= f.hidden_field :subject_id, :value => @rating.subject_id %>
+
+		<%= f.hidden_field :tag_name, :value => @rating.tag_name %>
+		<%= f.hidden_field :subject_name, :value => @rating.subject_name %>
+
+		<%= button_tag(type: :submit, :class => "ui blue labeled submit icon button") do %>
+			<i class='icon idea'></i> Post comment
+		<% end %>  
+	</div>
+
+<% end %>
+

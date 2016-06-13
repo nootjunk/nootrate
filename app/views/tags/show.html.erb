@@ -1,0 +1,70 @@
+<%- model_class = Tag -%>
+<% can_vote = current_user %>
+<% voting = can_vote && params.has_key?(:vote) %>
+<% rating_list = Rating.where(tag_id: @tag.id).order((voting ? :subject_name : :cached_votes_total) => (voting ? :asc : :desc)) %>
+
+<div class='ui grid'>
+  <div class="five wide column">
+    <div class="ui segment">
+      <h1 class='ui header' align='center'>Subjects
+        <% if can_vote %>
+          <div class='sub header'><% if !voting %><a href='?vote'>vote</a><% else %><a href='?'>done voting</a><% end %></div>
+        <% end %>
+      </h1>
+
+        <% if voting && Tag.count > rating_list.length %>
+          <strong>Add to:</strong>
+          <%= form_for Rating.new, :html => { :class => 'ui form' } do |f| %>
+            <%= f.hidden_field :tag_id, :value => @tag.id %>
+            <%= f.hidden_field :f, :value => :s %>
+            <%= f.collection_select :subject_id, Subject.where.not(id: rating_list.pluck(:subject_id)).order(:name),:id,:name %>
+          <%= f.submit 'Add', :class => 'ui button' %>
+          <% end %>
+        <% end %>
+
+      <div class="ui list">
+      <% user_votes = Hash[Vote.select(:votable_id, :vote_weight).where(votable_type: :Rating, voter_id: current_user).pluck(:votable_id, :vote_weight)] %>
+
+        <% rating_list.each do |rating| %>
+          <div class="item">
+            <% if voting %>
+              <% for i in 0..4 do %>
+                <% vote_weight = !user_votes[rating.id].nil? ? user_votes[rating.id] : -999 %>
+                <% vote_class = vote_weight == i ? 'orange' : '' %>
+                <%= link_to i, vote_rating_path(rating, w: i), remote: true, :title => "Vote #{i*25}.", :class => "toggle_orange circular icon ui mini button #{vote_class}" %>
+              <% end %>
+            <% else %>
+              <%= rating.link %>
+            <% end %>
+            <strong><%= rating.subject_link %></strong><% if !voting %> - <%= rating.votes %> votes <% end %>
+          </div>
+        <% end %>
+
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class='eleven wide column'>
+    <div class='ui segment'>
+      <h1 class='ui header' align='center'><%= @tag.name %><div class='sub header'>created <%= @tag.date %></div></h1>
+      <span align='justify'><%= @tag.description %></span>
+    </div>
+
+    <div class="ui grid">
+
+      <div class="sixteen wide column">
+        <div class='segment items ui feed'>
+          <h1 align='center'>Comments</h1>
+          <% Comment.where(tag_id: @tag.id).order(:cached_votes_score => :desc ).each_with_index do |comment, i| %>
+            <%= comment.as_html.html_safe %>
+          <% end %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,22 @@
+<%- model_class = Rating -%>
+<% page = params.has_key?(:p) ? params[:p].to_i > 0 ? params[:p].to_i : 0 : 0 %>
+<% count = page %>
+
+<table width="100%" class="table-striped">
+  <% Rating.limit(15).order(:cached_weighted_average => :desc).offset(page).each do |rating| %>
+    <tr>
+      <td width='30px'><%= count += 1 %></td>
+      <td><%= rating.link_full %></td>
+    </tr>
+  <% end %>
+</table>
+
+<% if page > 0 or count == page + 15 %>
+  <%= "view more " %>
+<% end %>
+<% if page > 0 %>
+  <%= link_to '[<<<]', ratings_path(p: page - 15) %>
+<% end %>
+<% if count == page + 15 %>
+  <%= link_to '[>>>]', ratings_path(p: page + 15) %>
+<% end %>

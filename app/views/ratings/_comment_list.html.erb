@@ -1,0 +1,5 @@
+<div class="ui feed">
+<% Comment.where(rating_id: @rating.id).order(:cached_votes_score => :desc).each do |comment| %>
+	<%= comment.as_html.html_safe %>
+<% end %>
+</div>

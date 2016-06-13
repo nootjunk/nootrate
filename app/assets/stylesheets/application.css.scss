@@ -1,0 +1,107 @@
+/*
+* This is a manifest file that'll be compiled into application.css, which will include all the files
+* listed below.
+*
+* Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+* or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+*
+* You're free to add application-wide styles to this file and they'll appear at the bottom of the
+* compiled file so the styles you add here take precedence over styles defined in any styles
+* defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+* file per style scope.
+*
+*= require_tree .
+*= require_self
+*/
+
+
+@import "semantic-ui";
+
+$subject: #0ec5ac;
+$tag: darkgray;
+$rating: black;
+
+.subject {
+    color: $subject;
+    font-weight: bold;
+}
+.subject:hover {
+    color: darken($subject, 10%);
+    text-decoration: underline;
+}
+
+.tag {
+    color: $tag;
+}
+.tag:hover {
+    color: darken($tag, 10%);
+    text-decoration: underline;
+}
+
+.rating {
+    color: $rating;
+}
+.rating:hover {
+    color: darken($rating, 10%);
+    text-decoration: underline;
+}
+
+
+
+
+
+
+ body {
+    padding-top: 50px;
+  }
+
+.jumbotron {
+  padding-top: 30px;
+  padding-bottom: 30px;
+  margin-bottom: 30px;
+  background-color: #eee;
+
+  background-image: image-url("mainlogo.jpg");
+  background-size: 980px * 1.5, 333px * 1.5;
+  background-attachment: scroll;
+  background-position: 0px, 200px;
+  color: white;
+  margin-bottom: 0;
+  position:relative;
+  bottom:10px;
+}
+.jumbotron h1,
+.jumbotron .h1 {
+  color: inherit;
+}
+.jumbotron p {
+  margin-bottom: 15px;
+  font-size: 21px;
+  font-weight: 200;
+}
+.jumbotron > hr {
+  border-top-color: #d5d5d5;
+}
+.container .jumbotron,
+.container-fluid .jumbotron {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+.jumbotron .container {
+  max-width: 100%;
+}
+@media screen and (min-width: 768px) {
+  .jumbotron {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+  .container .jumbotron,
+  .container-fluid .jumbotron {
+    padding-right: 60px;
+    padding-left: 60px;
+  }
+  .jumbotron h1,
+  .jumbotron .h1 {
+    font-size: 63px;
+  }
+}
