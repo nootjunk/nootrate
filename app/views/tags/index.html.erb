@@ -9,7 +9,7 @@
 <% rating_list = Rating.joins("ratings, tags").where('tags.id = ratings.tag_id')
   .where(alpha == '' ? '' : "lower(tag_name) LIKE '#{alpha.downcase}%'")
   .select("tag_id, tag_name, tags.description AS description, COUNT(DISTINCT subject_id) AS subject_count, SUM(cached_votes_total) AS vote_count")
-  .group(:tag_id)
+  .group('tag_id, tag_name, tags.description')
   .order(sorton == 'tag_name' ? "tag_name ASC" : "#{sorton} DESC" )
    %>
 
