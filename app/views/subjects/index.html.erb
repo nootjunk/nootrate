@@ -12,14 +12,14 @@
         <% if !params.has_key?(:tags) or params[:tags].blank? %>
           <% subjects = Rating.select('subject_id')
           .where(alpha == '' ? '' : "lower(subject_name) LIKE '#{alpha.downcase}%'")
-          .group(:subject_id)
+          .group(:subject_id, :subject_name)
           .includes(:subject)
           %>
         <% elsif params.has_key?(:allany) and params[:allany] == 'all' %>
           <% subjects = Rating.select('subject_id')
           .where(alpha == '' ? '' : "lower(subject_name) LIKE '#{alpha.downcase}%'")
           .where(tag_id: tags)
-          .group(:subject_id)
+          .group(:subject_id, :subject_name)
           .having("count(tag_id) = #{tags.size}")
           .includes(:subject)
           %>
@@ -27,7 +27,7 @@
           <% subjects = Rating.select('subject_id')
           .where(alpha == '' ? '' : "lower(subject_name) LIKE '#{alpha.downcase}%'")
           .where(tag_id: tags)
-          .group(:subject_id)
+          .group(:subject_id, :subject_name)
           .includes(:subject)
           %>
         <% end %>
@@ -58,7 +58,7 @@
 
       <h1 class="right floated">Filter by</h1>
       <div style='line-height: 200%;'>
-        <% Rating.select('tag_id as id, tag_name as name, COUNT(subject_id) as count').group(:tag_id).all.each do |tag| %>
+        <% Rating.select('tag_id as id, tag_name as name, COUNT(subject_id) as count').group(:tag_id, :tag_name).all.each do |tag| %>
           <% if tags.include?(tag.id) %>
             <a class="ui image tiny blue label" href= <%= subjects_path(:alpha => params[:alpha], :allany => params[:allany], :tags => (tags - [tag.id]).join(',')) %> >
           <% else %>

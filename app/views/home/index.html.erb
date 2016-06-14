@@ -5,20 +5,20 @@
 <div class="ui grid">
 	<div class="four wide column">
 		<h3>Most used tags</h3>
-		<% Rating.select('tag_name, COUNT(subject_id) AS count').order('COUNT(subject_id) DESC').limit(15).group(:tag_id).each_with_index do |rating, i| %>
+		<% Rating.select('tag_name, COUNT(subject_id) AS count').order('COUNT(subject_id) DESC').limit(15).group(:tag_id, :tag_name).each_with_index do |rating, i| %>
 			<%= "#{rating.tag_link} - #{rating.count} subjects".html_safe %><br>
 		<% end %>
 	</div>
 
 	<div class="four wide column">
 		<h3>Most tagged subjects</h3>
-		<% Rating.select('subject_name, COUNT(tag_id) AS count').order('COUNT(tag_id) DESC').limit(15).group(:subject_id).each_with_index do |rating, i| %>
+		<% Rating.select('subject_name, COUNT(tag_id) AS count').order('COUNT(tag_id) DESC').limit(15).group(:subject_id, :subject_name).each_with_index do |rating, i| %>
 			<%= "#{rating.subject_link} - #{rating.count} tags".html_safe %><br>
 		<% end %>
 	</div>
 
 	<div class="four wide column">
-		<h3>Mose voted on subjects</h3>
+		<h3>Most voted on subjects</h3>
 		<% Rating.order(:cached_votes_total => :desc).limit(15).each_with_index do |rating, i| %>
 			<%= "#{rating.subject_link} - #{rating.cached_votes_total} votes".html_safe %><br>
 		<% end %>

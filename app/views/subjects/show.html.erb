@@ -71,7 +71,7 @@
         <% ratings = Rating.select("subject_name, COUNT(tag_id) AS rank")
           .where(:tag_id => rating_list.pluck(:tag_id))
           .where.not(subject_id: @subject.id)
-          .group(:subject_id)
+          .group(:subject_id, :subject_name)
           .order("COUNT(tag_id) DESC")
           .limit(5) %>
 
