@@ -18,6 +18,11 @@
 #	{name:'Wakefullness aid', description:'Promoting the feeling of being awake, either mentally or physically.'}
 #])
 
+case Rails.env
+when "development"
+
+
+
 noots = [["Acceptance", "Acceptanceacceptance acceptance acceptance acceptanceacceptanceacceptance Acceptanceacceptance"],
 ["Admiration", "Admirationadmiration admiration admiration admirationadmirationadmiration Admirationadmiration"],
 ["Adoration", "Adorationadoration adoration adoration adorationadorationadoration Adorationadoration"],
@@ -577,3 +582,4 @@ noots.each do |noot|
 	end
 end
 
+end
