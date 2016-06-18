@@ -9,35 +9,32 @@
     <table class="ui table compact">
       <tbody>
 
-        <% if !params.has_key?(:tags) or params[:tags].blank? %>
-          <% subjects = Rating.select('subject_id')
-          .where(alpha == '' ? '' : "lower(subject_name) LIKE '#{alpha.downcase}%'")
-          .group(:subject_id, :subject_name)
-          .includes(:subject)
-          %>
-        <% elsif params.has_key?(:allany) and params[:allany] == 'all' %>
-          <% subjects = Rating.select('subject_id')
-          .where(alpha == '' ? '' : "lower(subject_name) LIKE '#{alpha.downcase}%'")
-          .where(tag_id: tags)
-          .group(:subject_id, :subject_name)
-          .having("count(tag_id) = #{tags.size}")
-          .includes(:subject)
-          %>
-        <% else %>
-          <% subjects = Rating.select('subject_id')
-          .where(alpha == '' ? '' : "lower(subject_name) LIKE '#{alpha.downcase}%'")
-          .where(tag_id: tags)
-          .group(:subject_id, :subject_name)
-          .includes(:subject)
-          %>
-        <% end %>
+        <%
+          if !params.has_key?(:tags) or params[:tags].blank?
+            subjects = Subject.select('name, safe_name, description')
+            .where(alpha == '' ? '' : "lower(name) LIKE '#{alpha.downcase}%'")
+          elsif params.has_key?(:allany) and params[:allany] == 'all'
+            subjects = Subject.select('subjects.name as name, safe_name, description')
+            .joins(:rating)
+            .group('subject_id, subjects.name, subjects.safe_name, subjects.description')
+            .where('ratings.tag_id in (?)', tags)
+            .where(alpha == '' ? '' : "lower(subject_name) LIKE '#{alpha.downcase}%'")
+            .having("count(tag_id) = #{tags.size}")
+          else
+            subjects = Subject.select('subjects.name as name, safe_name, description')
+            .joins(:rating)
+            .group('subject_id, subjects.name, subjects.safe_name, subjects.description')
+            .where('ratings.tag_id in (?)', tags)
+            .where(alpha == '' ? '' : "lower(subject_name) LIKE '#{alpha.downcase}%'")
+          end
+        %>
 
         <% subjects.each_with_index do |subject, index| %>
         <tr>
           <td><span class="ui gray circular label"><%= index + 1 %></span></td>
           <td>
-            <%= subject.subject.link %><br>
-            <%= subject.subject.description %>
+            <%= subject.link %><br>
+            <%= subject.description %>
           </td>
 
         </tr>

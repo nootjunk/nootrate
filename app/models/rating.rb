@@ -1,7 +1,7 @@
 class Rating < ActiveRecord::Base
 	acts_as_votable
-	belongs_to :subject
-	belongs_to :tag
+	has_one :subject
+	has_one :tag
 	
 	delegate :url_helpers, to: 'Rails.application.routes'
 	
@@ -18,7 +18,7 @@ class Rating < ActiveRecord::Base
 	end
 
 	def link
-		"<i class='circular ui label'><a class='rating' href='#{url_helpers.rating_path(self)}' title='#{average}/100'>#{average}</a></i>".html_safe
+		"<i class='circular ui label'><a class='rating' href='#{url_helpers.rating_path(self)}' title='#{average}%'>#{average}</a></i>".html_safe
 	end
 
 	def subject_link
@@ -30,7 +30,7 @@ class Rating < ActiveRecord::Base
 	end
 	
 	def average
-		cached_weighted_average.round(0)
+		((cached_weighted_average / 10.0) * 100.0).round(0)
 	end
 
 	def votes

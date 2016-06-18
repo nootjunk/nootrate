@@ -1,41 +1,41 @@
 <%- model_class = Tag -%>
 <% page = params.has_key?(:page) ? params[:page].to_i > 0 ? params[:page].to_i : 1 : 1 %>
 <% alpha = params.has_key?(:alpha) ? (("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".include? params[:alpha]) ? params[:alpha] : "") : "" %>
-<% sorton = params.has_key?(:sorton) ? ((['subject_count', 'vote_count'].member? params[:sorton]) ? params[:sorton] : 'tag_name') : 'tag_name' %>
+<% sorton = params.has_key?(:sorton) ? ((['subject_count', 'vote_count'].member? params[:sorton]) ? params[:sorton] : 'name') : 'name' %>
 
 <div class='ui grid'>
   <div class='eight wide column'>
 
-<% rating_list = Rating.joins("ratings, tags").where('tags.id = ratings.tag_id')
-  .where(alpha == '' ? '' : "lower(tag_name) LIKE '#{alpha.downcase}%'")
-  .select("tag_id, tag_name, tags.description AS description, COUNT(DISTINCT subject_id) AS subject_count, SUM(cached_votes_total) AS vote_count")
-  .group('tag_id, tag_name, tags.description')
-  .order(sorton == 'tag_name' ? "tag_name ASC" : "#{sorton} DESC" )
+<% tag_list = Tag.select("tags.name, safe_name, description, COUNT(DISTINCT ratings.subject_id) AS subject_count, SUM(ratings.cached_votes_total) AS vote_count")
+  .joins(:rating)
+  .where(alpha == '' ? '' : "lower(tags.name) LIKE '#{alpha.downcase}%'")
+  .group('tag_id, tags.name, tags.safe_name, tags.description')
+  .order(sorton == 'name' ? "tags.name ASC" : "#{sorton} DESC" )
    %>
 
 <table class="ui table compact">
 
   <tbody>
-      <% rating_list.each_with_index do |rating, index| %>
+      <% tag_list.each_with_index do |tag, index| %>
         <tr>
           <td><span class="ui gray circular label"><%= page * 10 - 10 + index + 1 %></span></td>
           <td>
-            <%= rating.tag_link %> - (<%= rating.subject_count %> subjects. <%= ActiveSupport::NumberHelper.number_to_delimited(rating.vote_count) %> votes)
+            <%= tag.link %> - (<%= tag.subject_count %> subjects. <%= ActiveSupport::NumberHelper.number_to_delimited(tag.vote_count) %> votes)
             <br>
-            <%= rating.description %>
+            <%= tag.description %>
           </td>
         
         </tr>
       <% end %>
       </tbody>
-</table>
+  </table>
 
   </div>
 
   <div class='eight wide column'>
   <div class="ui segment"  align='center'>
     <h1>Starts with</h1>
-    <%= link_to_if params.has_key?(:alpha), 'all', tags_path(:sorton => 'tag_name') %>
+    <%= link_to_if params.has_key?(:alpha), 'all', tags_path(:sorton => 'name') %>
 
     <% "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".each_char { |c| %>
       <%= link_to_if !(params.has_key?(:alpha) && params[:alpha] == c), c, tags_path(alpha: c) %>
@@ -43,8 +43,8 @@
 
     <h1>Sort on</h1>
     <div class="ui buttons">
-      <% active_class = sorton == 'tag_name' ? 'disabled positive' : '' %>
-      <%= link_to "Name", tags_path(:sorton => 'tag_name', :alpha => alpha),  :class => "ui button #{active_class}", :title => 'List subjects that contain all selected tags.' %>
+      <% active_class = sorton == 'name' ? 'disabled positive' : '' %>
+      <%= link_to "Name", tags_path(:sorton => 'name', :alpha => alpha),  :class => "ui button #{active_class}", :title => 'List subjects that contain all selected tags.' %>
       
       <div class="or"></div>
       <% active_class = sorton == 'subject_count' ? 'disabled positive' : '' %>

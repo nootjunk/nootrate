@@ -23,13 +23,19 @@
         <br>
 
         <% total_votes = @rating.cached_votes_total %>
-        
-        <% for i in 0..4 do %>
-            <% votes = Vote.where(votable_type: :Rating, votable_id: @rating, vote_weight: i).size %>
-            <% vote_scale = true ? i * 25 : votes == 0 ? 0 : (votes.to_f / total_votes.to_f) * 100 %>
+        <strong>Breakdown</strong>
+        <br>
+        <% for i in 0..10 do %>
+            <%= vote = Vote.select('COUNT(vote_weight) AS vote_count')
+            .where(votable_type: :Rating, votable_id: @rating.id, vote_weight: i)
+            .group(:id, :vote_weight, :votable_id).first
 
-            <%= "#{i}: #{i * 25}% based on #{i * 100} vote(s)" %><br>
-          <% end %>
+            if vote != nil
+                "#{i}: #{vote.vote_count} vote(s) (#{(vote.vote_count / total_votes * 100).round(2)}%)"
+            else
+                "#{i}: no votes"
+            end %><br>
+        <% end %>
     </div>
 
     <div class="ui segment">

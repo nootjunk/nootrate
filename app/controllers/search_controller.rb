@@ -5,8 +5,8 @@ class SearchController < ApplicationController
   	if !params.key?(:search)
   		redirect_to 'asdasd'
   	else
-  		@subjects = Subject.where('safe_name LIKE ?', "#{params[:search]}%")
-  		@tags = Tag.where('safe_name LIKE ?', "#{params[:search]}%")
+  		@subjects = Subject.where('safe_name LIKE ?', "%#{params[:search]}%")
+  		@tags = Tag.where('safe_name LIKE ?', "%#{params[:search]}%")
       @comments = Comment.where('comment LIKE ?', "%#{params[:search]}%")
   	end
   end

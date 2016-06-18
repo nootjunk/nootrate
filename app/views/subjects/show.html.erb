@@ -1,36 +1,48 @@
 <%- model_class = Subject -%>
 <% can_vote = current_user %>
 <% voting = can_vote && params.has_key?(:vote) %>
-<% rating_list = Rating.where(subject_id: @subject.id).order((voting ? :tag_name : :cached_votes_total) => (voting ? :asc : :desc)) %>
+
+<% if voting
+  rating_list = Rating.joins('ratings, tags')
+  .where('ratings.tag_id = tags.id')
+  .where(subject_id: @subject.id)
+  .select('ratings.id as id, ratings.name as name, tags.name as tag_name, tags.description as tag_description')
+  .order(:tag_name => :asc)
+else
+  rating_list = Rating.where(subject_id: @subject.id)
+  .order(:cached_votes_total => :desc)
+end
+%>
 
 <div class='ui grid'>
-  <div class='eleven wide column'>
+
+  <div class='<%= voting ? 'eight' : 'ten' %> wide column'>
     <div class='ui segment'>
       <h1 class='ui header' align='center'><%= @subject.name %><div class='sub header'>created <%= @subject.date %></div></h1>
-      <span align='justify'><%= @subject.description %></span>
+      <h4 class='ui header' align='center'><%= @subject.description %></h4>
     </div>
 
-    <div class="ui grid">
-
-      <div class="sixteen wide column">
-        <div class='segment items ui feed'>
-          <h1 align='center'>Comments</h1>
-          <% Comment.where(subject_id: @subject.id).order(:cached_votes_score => :desc ).each_with_index do |comment, i| %>
-            <%= comment.as_html.html_safe %>
-          <% end %>
-        </div>
-      </div>
-
+    <% comments = Comment.where(subject_id: @subject.id).order(:cached_votes_score => :desc)
+    if comments.size > 0 %>
+    <div class='segment items ui feed'>
+      <h1 align='center'>Comments</h1>
+      <% comments.each do |comment| %>
+        <%= comment.as_html.html_safe %>
+      <% end %>
     </div>
+    <% end %>
+
   </div>
 
-  <div class="five wide column">
+  <div class="<%= voting ? 'eight' : 'six' %> wide column">
     <div class="ui segment">
-      <h1 class='ui header' align='center'>Tags
+      <h1 class='ui header' align='center'>Tags<div class='sub header'>
         <% if can_vote %>
-          <div class='sub header'><% if !voting %><a href='?vote'>vote or tag</a><% else %><a href='?'>done</a><% end %></div>
+          <% if !voting %><a href='?vote'>vote or tag</a><% else %><a href='?'>done</a><% end %>
+        <% else %>
+          Please sign in to vote & tag.
         <% end %>
-      </h1>
+      </div></h1>
 
       <% if voting && Tag.count > rating_list.length %>
         <strong>Add tag:</strong>
@@ -46,41 +58,45 @@
         <% user_votes = Hash[Vote.select(:votable_id, :vote_weight).where(votable_type: :Rating, voter_id: current_user).pluck(:votable_id, :vote_weight)] %>
 
         <% rating_list.each do |rating| %>
-          <div class="item">
+        <div class="item">
 
           <% if voting %>
-            <% for i in 0..4 do %>
-              <% vote_weight = !user_votes[rating.id].nil? ? user_votes[rating.id] : -999 %>
-              <% vote_class = vote_weight == i ? 'orange' : '' %>
-              <%= link_to i, vote_rating_path(rating, w: i), remote: true, :title => "Vote #{i*25}%.", :class => "toggle_orange circular icon ui mini button #{vote_class}" %>
-            <% end %>
-            <% else %>
-              <%= rating.link %>
-            <% end %>
+            <div align='center'>
+              <strong><%= rating.tag_name %></strong><br>
+              <%= rating.tag_description %><br>
+              <% for i in 0..10 do %>
+                <%= vote_weight = !user_votes[rating.id].nil? ? user_votes[rating.id] : -999
+                  vote_class = vote_weight == i ? 'orange' : ''
+                  link_to i, vote_rating_path(rating.name, w: i), remote: true, :class => "toggle_orange circular icon ui mini button #{vote_class}" %>
+              <% end %>
+            </div>
+            <br>
+          <% else %>
+            <%= rating.link %><strong><%= rating.tag_link %></strong> - <%= rating.votes %> votes
+          <% end %>
 
-            <strong><%= rating.tag_link %></strong><% if !voting %> - <%= rating.votes %> votes <% end %>
-          </div>
+        </div>
         <% end %>
       </div>
 
     </div>
 
-    <% if !voting %>
+    <% ratings = Rating.select("subject_name, COUNT(tag_id) AS rank")
+      .where(:tag_id => rating_list.pluck(:tag_id))
+      .where.not(subject_id: @subject.id)
+      .group(:subject_id, :subject_name)
+      .order("COUNT(tag_id) DESC")
+      .limit(5)
+
+    if !voting && ratings.length > 0 %>
       <div class='ui segment' align='center'>
         <h1>Similar</h1>
-        <% ratings = Rating.select("subject_name, COUNT(tag_id) AS rank")
-          .where(:tag_id => rating_list.pluck(:tag_id))
-          .where.not(subject_id: @subject.id)
-          .group(:subject_id, :subject_name)
-          .order("COUNT(tag_id) DESC")
-          .limit(5) %>
-
-        <% ratings.each_with_index do |similar_rating, index| %>
+        <% ratings.each do |similar_rating| %>
           <h4 class='ui header'><%= similar_rating.subject_link %>
             <div class="sub header"><%= similar_rating.rank %> tags in common</div>
           </h4>
         <% end %>
-        
+
       </div>
     <% end %>
 
