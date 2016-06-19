@@ -11,11 +11,13 @@ site features:
   * apply tags to subjects (or subjects to tags, if thats easier)
   * vote (0-10) on tags
   * comment on subject-tag pages
-* tag pages which list subjects based on their ratings
-* subject lists which can be filtered by multiple tags
-* 'related' subjects panel (based on related tags)
+* pages for tags with sorted list of subjects
+* pages for subjects with
+  * sorted list of tags
+  * 'related' subjects panel (based on related tags)
+* main 'subjects' page for filtering all subjects by tags
 
 eventual features
-* filter subjects by tag ratings
+* filter 'subjects' page by tag ratings
 * allow comments for subjects and tags pages
 * show similar subjects based on users rating
