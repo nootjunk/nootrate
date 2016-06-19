@@ -14,8 +14,8 @@
 
 	<div class="five wide column">
 		<h3>Popular subjects</h3>
-		<% Rating.order(:cached_votes_total => :desc).limit(15).each do |rating| %>
-			<%= "#{rating.subject_link} - #{rating.cached_votes_total} votes".html_safe %><br>
+		<% Rating.select('subject_name, SUM(cached_votes_total) as sum_votes, COUNT(tag_id) as tag_count').order('SUM(cached_votes_total) DESC').limit(15).group(:subject_name).each do |rating| %>
+			<%= "#{rating.subject_link} - #{rating.sum_votes} votes/#{rating.tag_count} tags".html_safe %><br>
 		<% end %>
 	</div>
 
