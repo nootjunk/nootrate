@@ -1,16 +1,16 @@
 == nootrate source v1
-[nootrate](https://nootrate.herokuapp.com/)
+https://nootrate.herokuapp.com/
 
 the site was designed for rating nootropics, but feel free to use it for your own purposes.
 i don't own the rights to the main page image, and can't track down a source. i'll remove it if necessary, but this is just a small personal project.
-css framework is [semantic ui](http://semantic-ui.com/)
+css framework is http://semantic-ui.com/
 
 site features:
 * registered users can
---* create subjects and tags
---* apply tags to subjects (or subjects to tags, if thats easier)
---* vote (0-10) on tags
---* comment on subject-tag pages
+  * create subjects and tags
+  * apply tags to subjects (or subjects to tags, if thats easier)
+  * vote (0-10) on tags
+  * comment on subject-tag pages
 * tag pages which list subjects based on their ratings
 * subject lists which can be filtered by multiple tags
 * 'related' subjects panel (based on related tags)
