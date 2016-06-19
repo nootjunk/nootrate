@@ -1,28 +1,21 @@
-== README
+== nootrate source v1
+[nootrate](https://nootrate.herokuapp.com/)
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+the site was designed for rating nootropics, but feel free to use it for your own purposes.
+i don't own the rights to the main page image, and can't track down a source. i'll remove it if necessary, but this is just a small personal project.
+css framework is [semantic ui](http://semantic-ui.com/)
 
-Things you may want to cover:
+site features:
+* registered users can
+--* create subjects and tags
+--* apply tags to subjects (or subjects to tags, if thats easier)
+--* vote (0-10) on tags
+--* comment on subject-tag pages
+* tag pages which list subjects based on their ratings
+* subject lists which can be filtered by multiple tags
+* 'related' subjects panel (based on related tags)
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+eventual features
+* filter subjects by tag ratings
+* allow comments for subjects and tags pages
+* show similar subjects based on users rating
