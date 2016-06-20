@@ -14,8 +14,6 @@ class CommentsController < ApplicationController
   end
 
   def new
-    @comment = Comment.new
-    respond_with(@comment)
   end
 
   def edit
@@ -24,13 +22,14 @@ class CommentsController < ApplicationController
   def create
     if !current_user
       redirect_to :back, notice: "You must be logged in to comment."
-    else
-      p = comment_params
-      p[:user] = current_user.id
-      p[:user_name] = current_user.username
-      @comment = Comment.new(p)
+    elsif verify_recaptcha
+      @comment = Comment.new(comment_params)
       @comment.save
-      redirect_to(:back)
+      redirect_to :back, notice: "Comment added."
+    else
+      flash[:notice] = "CAPTCHA failed."
+      session[:comment] = comment_params[:comment]
+      redirect_to :back
     end
   end
 

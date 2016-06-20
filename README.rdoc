@@ -1,4 +1,4 @@
-== nootrate source v1
+== nootrate source v2
 [nootrate](https://nootrate.herokuapp.com/)
 
 the site was designed for rating nootropics, but feel free to use it for your own purposes.
@@ -19,3 +19,8 @@ eventual features
 * filter subjects by tag ratings
 * allow comments for subjects and tags pages
 * show similar subjects based on users rating
+
+== updates
+==== v2
+* added captcha to 'new subject', 'new tag', 'rating comment'
+* added bar charts to 'ratings' pages

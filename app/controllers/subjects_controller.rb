@@ -15,6 +15,7 @@ class SubjectsController < ApplicationController
 
   # GET /subjects/new
   def new
+    @subject = Subject.new
   end
 
   # GET /subjects/1/edit
@@ -26,21 +27,26 @@ class SubjectsController < ApplicationController
   def create
     # check if already exists
     @subject = Subject.find_by_safe_name(subject_params[:name].parameterize('_'));
-    existed = true;
 
+    if @subject != nil
+      flash[:notice] = 'Subject already existed.'
+      redirect_to @subject
+    
     # create otherwise
-    if @subject == nil
+    else
       @subject = Subject.new(name: subject_params[:name], safe_name: subject_params[:name].parameterize('_'), description: subject_params[:description]);
-      existed = false;
-    end
-
-    respond_to do |format|
-      if @subject.save
-        format.html { redirect_to @subject, notice: (existed ? 'Subject already existed.' : 'Subject was successfully created.') }
-        format.json { render :show, status: :created, location: @subject }
+      
+      # verify captcha
+      if !verify_recaptcha
+        flash[:notice] = "CAPTCHA failed."
+        render :new
+      # save and redirect to subject
+      elsif @subject.save
+        flash[:notice] = 'Subject was successfully created.';
+        redirect_to @subject
       else
-        format.html { render :new }
-        format.json { render json: @subject.errors, status: :unprocessable_entity }
+        flash[:notice] = @subject.errors
+        render :new
       end
     end
   end
@@ -91,6 +97,6 @@ class SubjectsController < ApplicationController
     
     # Never trust parameters from the scary internet, only allow the white list through.
     def subject_params
-      params.require(:subject).permit(:name, :description, :rating_id)
+      params.require(:subject).permit(:name, :description)
     end
 end

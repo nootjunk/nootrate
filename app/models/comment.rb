@@ -1,6 +1,7 @@
 class Comment < ActiveRecord::Base
 	delegate :url_helpers, to: 'Rails.application.routes' 
 	acts_as_votable
+	include  ActionView::Helpers::TextHelper
 	
 	def link
 		"<a href='#{url_helpers.comment_path(self)}'>#{id}</a>".html_safe
@@ -40,7 +41,7 @@ class Comment < ActiveRecord::Base
 					#{rating_link} 
 					<a href='#{url_helpers.comment_path(self)}' class='date'>#{self.date}</a>
 				</div>
-				<div class='extra text'>#{self.comment}</div>
+				<div class='extra text'>#{simple_format(self.comment)}</div>
 				<div class='meta'>#{self.upvotes} upvotes &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#{self.downvotes} downvotes</div>
 			</div>
 		</div>".html_safe

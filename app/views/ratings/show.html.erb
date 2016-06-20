@@ -4,38 +4,25 @@
 <div class='ui grid'>
   <div class='sixteen wide column'>
     <div class="ui segment">
-        <h1 align='center'>Rating for <%= subject.link %> / <%= tag.link %></h1>
+        <h1 align='center'><%= "<i title='rating-id:#{@rating.id}' class='icon bar chart'></i> #{subject.link} / #{tag.link}".html_safe %></h1>
 
-        <strong>Subject:</strong> <%= subject.name %>
+        <strong><%= subject.name %></strong> 
         <br>
         <%= subject.description.html_safe %>
         <br>
         <br>
-        <strong>Tag:</strong> <%= tag.name %>
+        <strong><%= tag.name %></strong> 
         <br>
         <%= tag.description.html_safe %>
         <br>
         <br>
         <strong>Rating</strong>
         <br>
-        Average: <%= "#{@rating.average}% based on #{@rating.votes} vote(s)." %>
+        <%= "#{@rating.average}% based on #{@rating.votes} vote(s)." %>
         <br>
         <br>
-
         <% total_votes = @rating.cached_votes_total %>
-        <strong>Breakdown</strong>
-        <br>
-        <% for i in 0..10 do %>
-            <%= vote = Vote.select('COUNT(vote_weight) AS vote_count')
-            .where(votable_type: :Rating, votable_id: @rating.id, vote_weight: i)
-            .group(:id, :vote_weight, :votable_id).first
-
-            if vote != nil
-                "#{i}: #{vote.vote_count} vote(s) (#{(vote.vote_count / total_votes * 100).round(2)}%)"
-            else
-                "#{i}: no votes"
-            end %><br>
-        <% end %>
+        <%= column_chart Vote.group(:vote_weight).where(votable_id: @rating.id).count(:id), ytitle: "Total votes", label: "Total votes", colors: ["#f2711c"] %>
     </div>
 
     <div class="ui segment">

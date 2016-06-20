@@ -1,0 +1,6 @@
+text 'click on your vote to remove it'
+better ratings display
+dosage input
+timeframe input
+comments are anonymous but should show users rating for the subject at the time the comment was made
+captcha for comments, so they don't have to log user, so are more anonymous

@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'dotenv-rails', :groups => [:development, :test]
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.4'
@@ -56,3 +57,6 @@ gem 'coffee-script-source', '1.8.0'
 gem 'acts_as_votable', github: 'ryanto/acts_as_votable'
 #gem 'acts-as-taggable-on', '~> 3.4'
 gem 'semantic-ui-sass', github: 'doabit/semantic-ui-sass'
+gem "recaptcha", require: "recaptcha/rails"
+gem 'certified'
+gem "chartkick"

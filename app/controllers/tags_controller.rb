@@ -15,6 +15,7 @@ class TagsController < ApplicationController
 
   # GET /tags/new
   def new
+    @tag = Tag.new
   end
 
   # GET /tags/1/edit
@@ -25,22 +26,27 @@ class TagsController < ApplicationController
   # POST /tags.json
   def create
     # check if already exists
-    @tag = Tag.find_by_safe_name(subject_params[:name].parameterize('_'));
-    existed = true
+    @tag = Tag.find_by_safe_name(tag_params[:name].parameterize('_'));
 
-    # create otherwise
-    if @tag == nil
-      @tag = Tag.new(name: subject_params[:name], safe_name: subject_params[:name].parameterize('_'), description: subject_params[:description]);
-      existed = false
-    end
+    if @tag != nil
+      flash[:notice] = 'Tag already existed.'
+      redirect_to @tag
     
-    respond_to do |format|
-      if @tag.save
-        format.html { redirect_to @tag, notice: (existed ? 'Tag already existed.' : 'Tag was successfully created.')  }
-        format.json { render :show, status: :created, location: @tag }
+    # create otherwise
+    else
+      @tag = Tag.new(name: tag_params[:name], safe_name: tag_params[:name].parameterize('_'), description: tag_params[:description]);
+      
+      # verify captcha
+      if !verify_recaptcha
+        flash[:notice] = "CAPTCHA failed."
+        render :new
+      # save and redirect to tag
+      elsif @tag.save
+        flash[:notice] = 'Tag was successfully created.';
+        redirect_to @tag
       else
-        format.html { render :new }
-        format.json { render json: @tag.errors, status: :unprocessable_entity }
+        flash[:notice] = @tag.errors
+        render :new
       end
     end
   end
@@ -80,7 +86,7 @@ class TagsController < ApplicationController
   private
     def must_be_admin
       unless current_user && current_user.role == 'admin'
-        redirect_to :bacl, notice: "You must be signed in and have appropriate permission."
+        redirect_to :back, notice: "You must be signed in and have appropriate permission."
       end
     end
 
@@ -91,6 +97,6 @@ class TagsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def tag_params
-      params.require(:tag).permit(:name, :description, :rating_id)
+      params.require(:tag).permit(:name, :description)
     end
 end

@@ -1,24 +1,22 @@
 <%- model_class = Subject -%>
 <h1 align='center'>Add new subject</h1>
 
-<%= simple_form_for(Subject.new) do |f| %>
-  <%= f.error_notification %>
-
-  <div class="ui form">
-
-    <div class="field">
-      <%= f.input :name %>
-    </div>
-
-    <div class="field">
-      <%= f.input :description %>
-    </div>
-
-    <%= button_tag(type: :submit, :class => "ui blue labeled submit icon button") do %>
-      <i class='icon idea'></i> Create
-    <% end %>  
-
+<%= form_for @subject, :action => "create", :html => {:class => "ui form"} do |f| %>
+  
+  <div class="field">
+      <label>Name:</label>
+      <%= f.text_field :name %>
   </div>
 
+  <div class="field">
+      <label>Description:</label>
+      <%= f.text_area :description %>
+  </div>
+
+  <div class="field">
+    <%= recaptcha_tags %>
+  </div>
+
+  <%= f.submit "Create", :class => "ui blue button" %>
 <% end %>
 
