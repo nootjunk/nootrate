@@ -2,7 +2,7 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
-Rails.env.development?
+if Rails.env.development?
     require 'dotenv' ; Dotenv.load ".env.local", ".env.#{Rails.env}"
 end
 

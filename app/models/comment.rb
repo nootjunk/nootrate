@@ -33,7 +33,7 @@ class Comment < ActiveRecord::Base
 		"<div class='event'>
 			<div class='label'>
 		  		<a title='upvote' data-remote='true' href='#{url_helpers.vote_comment_path(self, w: 1)}'><i data-w='1' class='toggle_orange icon chevron up'></i></a>
-		  		<div class='rating' data-w='#{self.rating}' align='center'>#{self.rating}</div>
+		  		<div class='rating' data-w='#{self.rating}' align='center' title='#{self.upvotes} upvotes - #{self.downvotes} downvotes'>#{self.rating}</div>
 		  		<a title='downvote' data-remote='true' href='#{url_helpers.vote_comment_path(self, w: -1)}'><i data-w='-1' class='toggle_orange icon chevron down'></i></a>
 			</div>
 			<div class='content'>
@@ -42,7 +42,6 @@ class Comment < ActiveRecord::Base
 					<a href='#{url_helpers.comment_path(self)}' class='date'>#{self.date}</a>
 				</div>
 				<div class='extra text'>#{simple_format(self.comment)}</div>
-				<div class='meta'>#{self.upvotes} upvotes &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#{self.downvotes} downvotes</div>
 			</div>
 		</div>".html_safe
 	end
