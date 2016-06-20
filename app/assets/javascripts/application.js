@@ -16,8 +16,6 @@
 //= require jquery.turbolinks
 //= require semantic-ui
 //= require_tree .
-//= require Chart.bundle
-//= require chartkick
 
 $(document).ready(function() {
 	$('.toggle_orange').click(function() {
