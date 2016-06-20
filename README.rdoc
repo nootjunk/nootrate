@@ -1,7 +1,7 @@
 == nootrate source v1
 https://nootrate.herokuapp.com
 
-the site was designed for rating nootropics, but feel free to use it for your own purposes.
+the site was designed for rating nootropics, but feel free to use the source for your own projects.
 i don't own the rights to the main page image, and can't track down a source. i'll remove it if necessary, but this is just a small personal project.
 css framework is http://semantic-ui.com
 
