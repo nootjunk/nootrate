@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 == nootrate source v2
-[nootrate](https://nootrate.herokuapp.com/)
-=======
-== nootrate source v1
 https://nootrate.herokuapp.com
->>>>>>> origin/master
 
 the site was designed for rating nootropics, but feel free to use the source for your own projects.
 i don't own the rights to the main page image, and can't track down a source. i'll remove it if necessary, but this is just a small personal project.
