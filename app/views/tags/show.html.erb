@@ -1,76 +1,23 @@
 <%- model_class = Tag -%>
-<% can_vote = current_user %>
-<% voting = can_vote && params.has_key?(:vote) %>
+<% title @tag.name %>
+<% voting = current_user && params.has_key?(:vote) %>
 <% rating_list = Rating.where(tag_id: @tag.id).order((voting ? :subject_name : :cached_votes_total) => (voting ? :asc : :desc)) %>
 
 <div class='ui grid'>
-  <div class="<%= voting ? 'eight' : 'six' %> wide column">
-    <div class="ui segment">
-      <h1 class='ui header' align='center'>Subjects<div class='sub header'>
-        <% if can_vote %>
-          <% if !voting %><a href='?vote'>vote or tag</a><% else %><a href='?'>done</a><% end %>
-        <% else %>
-          Please sign in to vote or tag.
-        <% end %>
-      </div></h1>
-
-        <% if voting && Tag.count > rating_list.length %>
-          <strong>Add to:</strong>
-          <%= form_for Rating.new, :html => { :class => 'ui form' } do |f| %>
-            <%= f.hidden_field :tag_id, :value => @tag.id %>
-            <%= f.hidden_field :f, :value => :s %>
-            <%= f.collection_select :subject_id, Subject.where.not(id: rating_list.pluck(:subject_id)).order(:name),:id,:name %>
-          <%= f.submit 'Add', :class => 'ui button' %>
-          <% end %>
-        <% end %>
-
-      <div class="ui list">
-      <% user_votes = Hash[Vote.select(:votable_id, :vote_weight).where(votable_type: :Rating, voter_id: current_user).pluck(:votable_id, :vote_weight)] %>
-
-        <% rating_list.each do |rating| %>
-          <div class="item">
-            <% if voting %>
-              <div align='center'>
-                <strong><%= rating.subject_name %></strong>
-                <br>
-                <% for i in 0..10 do %>
-                  <% vote_weight = !user_votes[rating.id].nil? ? user_votes[rating.id] : -999 %>
-                  <% vote_class = vote_weight == i ? 'orange' : '' %>
-                  <%= link_to i, vote_rating_path(rating, w: i), remote: true, :title => "Vote #{i*25}.", :class => "toggle_orange circular icon ui mini button #{vote_class}" %>
-                <% end %>
-                <br>
-                <br>
-              </div>
-            <% else %>
-              <%= rating.link %><strong><%= rating.subject_link %></strong><% if !voting %> - <%= rating.votes %> votes <% end %>
-            <% end %>
-          </div>
-        <% end %>
-
-
-      </div>
-
-    </div>
-  </div>
-
 
   <div class='<%= voting ? 'eight' : 'ten' %> wide column'>
     <div class='ui segment'>
       <h1 class='ui header' align='center'><%= @tag.name %><div class='sub header'>created <%= @tag.date %></div></h1>
       <h4 class='ui header' align='center'><%= @tag.description %></h4>
+      <br><br>
+      <%= comment_list tag_id: @tag.id %>
     </div>
+  </div>
 
-    <% comments = Comment.where(tag_id: @tag.id).order(:cached_votes_score => :desc )
-
-    if comments.size > 0 %>
-      <div class='segment items ui feed'>
-          <h1 align='center'>Comments</h1>
-          <% comments.each do |comment| %>
-            <%= comment.as_html.html_safe %>
-          <% end %>
-      </div>
-    <% end %>
-
+  <div class="<%= voting ? 'eight' : 'six' %> wide column">
+    <div class="ui segment">
+      <%= attribute_list(voting, 'tag', @tag.id)[0] %>
+    </div>
   </div>
 </div>
 

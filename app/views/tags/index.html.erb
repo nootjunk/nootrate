@@ -1,4 +1,5 @@
 <%- model_class = Tag -%>
+<% title "Tags" %>
 <% page = params.has_key?(:page) ? params[:page].to_i > 0 ? params[:page].to_i : 1 : 1 %>
 <% alpha = params.has_key?(:alpha) ? (("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".include? params[:alpha]) ? params[:alpha] : "") : "" %>
 <% sorton = params.has_key?(:sorton) ? ((['subject_count', 'vote_count'].member? params[:sorton]) ? params[:sorton] : 'name') : 'name' %>
@@ -57,5 +58,7 @@
     </div>
 
   </div>
+    <a href="tags/new" class="ui teal labeled icon button">Create New Tag<i class="add icon"></i></a>
+
   </div>
 </div>

@@ -26,7 +26,7 @@ class Comment < ActiveRecord::Base
 	def rating_link
 		subject_safe_name = subject_name.parameterize('_')
 		tag_safe_name = tag_name.parameterize('_')
-		"<a href='#{url_helpers.rating_path(subject_safe_name)}-#{tag_safe_name}'><i class='icon bar chart'></i></a><a class='subject' href='#{url_helpers.subject_path(subject_safe_name)}'>#{subject_name}</a> / <a class='tag' href='#{url_helpers.tag_path(tag_safe_name)}'>#{tag_name}</a>".html_safe
+		"<a class='rating' href='#{url_helpers.rating_path(subject_safe_name)}-#{tag_safe_name}'><i class='icon bar chart'></i></a><a class='subject' href='#{url_helpers.subject_path(subject_safe_name)}'>#{subject_name}</a> / <a class='tag' href='#{url_helpers.tag_path(tag_safe_name)}'>#{tag_name}</a>".html_safe
 	end
 
 	def as_html

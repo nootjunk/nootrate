@@ -105,3 +105,61 @@ $rating: black;
     font-size: 63px;
   }
 }
+
+
+.bar-chart {
+    position: relative;
+    width: 100%;
+}
+
+.bar-chart > .chart {
+    position: relative;
+    width: 100%;
+}
+
+.bar-chart > .chart > .chart-item {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    margin-bottom: 4px;
+    color: #B8B8B8;
+}
+
+.bar-chart > .chart > .chart-item > .bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #F0F0F0;
+    z-index: 5;
+}
+
+.bar-chart > .chart > .chart-item > .bar > .percent {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 20px;
+    line-height: 20px;
+    padding-right: 4px;
+    z-index: 15;
+}
+
+.bar-chart > .chart > .chart-item > .bar > .item-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #E0E0E0;
+    z-index: 10;
+}
+
+.bar-chart > .chart > .chart-item > .bar > .title {
+    display: block;
+    position: absolute;
+    height: 20px;
+    line-height: 20px;
+    padding-left: 4px;
+    z-index: 100;
+}

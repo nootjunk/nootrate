@@ -1,5 +1,6 @@
 <%- model_class = Subject -%>
-<h1 align='center'>Add new subject</h1>
+<% title "Create new subject" %>
+<h1 align='center'>Create new subject</h1>
 
 <%= form_for @subject, :action => "create", :html => {:class => "ui form"} do |f| %>
   

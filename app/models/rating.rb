@@ -17,8 +17,17 @@ class Rating < ActiveRecord::Base
 		tag_name.parameterize('_')
 	end
 
+	def display(attribute)
+		(attribute == 'tag' ? subject_link : tag_link) + " - <a class='rating' href='#{url_helpers.rating_path(self)}'>#{votes} votes</a>
+		<div class='ui small progress #{attribute=='tag'? 'teal' : 'grey'}' data-percent='#{average}'>
+			<div class='bar' style='width:#{average}%;'>
+				<div class='progress'>#{average}</div>
+			</div>
+		</div>".html_safe
+	end
+
 	def link
-		"<i class='circular ui label'><a class='rating' href='#{url_helpers.rating_path(self)}' title='#{average}%'>#{average}</a></i>".html_safe
+		"<i class='circular ui label'><a class='rating'  title='#{average}%'>#{average}</a></i>".html_safe
 	end
 
 	def subject_link
@@ -30,7 +39,7 @@ class Rating < ActiveRecord::Base
 	end
 	
 	def average
-		((cached_weighted_average / 10.0) * 100.0).round(0)
+		(cached_weighted_average * 10.0).round(0)
 	end
 
 	def votes

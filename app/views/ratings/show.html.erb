@@ -1,3 +1,7 @@
+<% content_for :javascript_includes do %>
+  <%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
+<% end %>
+
 <%- model_class = Rating -%>
 <% subject = Subject.find_by(id: @rating.subject_id) %>
 <% tag = Tag.find_by(id: @rating.tag_id) %>

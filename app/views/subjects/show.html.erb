@@ -1,18 +1,6 @@
 <%- model_class = Subject -%>
-<% can_vote = current_user %>
-<% voting = can_vote && params.has_key?(:vote) %>
-
-<% if voting
-  rating_list = Rating.joins('ratings, tags')
-  .where('ratings.tag_id = tags.id')
-  .where(subject_id: @subject.id)
-  .select('ratings.id as id, ratings.name as name, tags.name as tag_name, tags.description as tag_description')
-  .order(:tag_name => :asc)
-else
-  rating_list = Rating.where(subject_id: @subject.id)
-  .order(:cached_votes_total => :desc)
-end
-%>
+<% title @subject.name %>
+<% voting = current_user && params.has_key?(:vote) %>
 
 <div class='ui grid'>
 
@@ -20,85 +8,77 @@ end
     <div class='ui segment'>
       <h1 class='ui header' align='center'><%= @subject.name %><div class='sub header'>created <%= @subject.date %></div></h1>
       <h4 class='ui header' align='center'><%= @subject.description %></h4>
-    </div>
-
-    <% comments = Comment.where(subject_id: @subject.id).order(:cached_votes_score => :desc)
-    if comments.size > 0 %>
-    <div class='segment items ui feed'>
-      <h1 align='center'>Comments</h1>
-      <% comments.each do |comment| %>
-        <%= comment.as_html.html_safe %>
-      <% end %>
-    </div>
-    <% end %>
-
+      <br><br>
+      <%= comment_list subject_id: @subject.id %>
+  </div>
   </div>
 
   <div class="<%= voting ? 'eight' : 'six' %> wide column">
     <div class="ui segment">
-      <h1 class='ui header' align='center'>Tags<div class='sub header'>
-        <% if can_vote %>
-          <% if !voting %><a href='?vote'>vote or tag</a><% else %><a href='?'>done</a><% end %>
-        <% else %>
-          Please sign in to vote & tag.
-        <% end %>
-      </div></h1>
 
-      <% if voting && Tag.count > rating_list.length %>
-        <strong>Add tag:</strong>
-        <%= form_for Rating.new, :html => { :class => 'ui form' } do |f| %>
-          <%= f.hidden_field :subject_id, :value => @subject.id %>
-          <%= f.hidden_field :f, :value => :s %>
-          <%= f.collection_select :tag_id, Tag.where.not(id: rating_list.pluck(:tag_id)).order(:name),:id,:name %>
-          <%= f.submit 'Add', :class => 'ui button' %>
-        <% end %>
-      <% end %>
 
-      <div class="ui list">
-        <% user_votes = Hash[Vote.select(:votable_id, :vote_weight).where(votable_type: :Rating, voter_id: current_user).pluck(:votable_id, :vote_weight)] %>
-
-        <% rating_list.each do |rating| %>
-        <div class="item">
-
-          <% if voting %>
-            <div align='center'>
-              <strong><%= rating.tag_name %></strong><br>
-              <%= rating.tag_description %><br>
-              <% for i in 0..10 do %>
-                <%= vote_weight = !user_votes[rating.id].nil? ? user_votes[rating.id] : -999
-                  vote_class = vote_weight == i ? 'orange' : ''
-                  link_to i, vote_rating_path(rating.name, w: i), remote: true, :class => "toggle_orange circular icon ui mini button #{vote_class}" %>
-              <% end %>
+    <div class="bar-chart">
+                <div class="chart clearfix">
+                    <div class="chart-item">
+                        <div class="bar">
+                            <span class="percent">100</span>
+                            <span class="item-progress" style="width:50%"></span>
+                            <span class="title"><%= @subject.link %> - 0 votes</span>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-item">
+                        <div class="bar">
+                            <span class="percent">71</span>
+                            <span class="item-progress" style="width:71%"></span>
+                            <span class="title">Reading - 12.1k votes</span>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-item">
+                        <div class="bar">
+                            <span class="percent">100</span>
+                            <span class="item-progress" style="width:100%"></span>
+                            <span class="title">Ass - 0 votes</span>
+                        </div>
+                    </div>
+            
+                    <div class="chart-item">
+                        <div class="bar">
+                            <span class="percent">10</span>
+                            <span class="item-progress" style="width:10%"></span>
+                            <span class="title">Persuasion - 123 votes</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- //.chart -->
             </div>
-            <br>
-          <% else %>
-            <%= rating.link %><strong><%= rating.tag_link %></strong> - <%= rating.votes %> votes
-          <% end %>
 
-        </div>
-        <% end %>
-      </div>
 
-    </div>
 
-    <% ratings = Rating.select("subject_name, COUNT(tag_id) AS rank")
-      .where(:tag_id => rating_list.pluck(:tag_id))
+      
+
+      <% html, list = attribute_list(voting, 'subject', @subject.id) %>
+      <%= html %>
+      
+    <% if !voting
+      ratings = Rating.select("subject_name, COUNT(tag_id) AS rank")
+      .where(:tag_id => list.pluck(:tag_id))
       .where.not(subject_id: @subject.id)
       .group(:subject_id, :subject_name)
       .order("COUNT(tag_id) DESC")
       .limit(5)
 
-    if !voting && ratings.length > 0 %>
-      <div class='ui segment' align='center'>
-        <h1>Similar</h1>
+     if ratings.length > 0 %>
+      <div class="ui divider"></div>
+        <h3>Similar</h3>
         <% ratings.each do |similar_rating| %>
-          <h4 class='ui header'><%= similar_rating.subject_link %>
-            <div class="sub header"><%= similar_rating.rank %> tags in common</div>
-          </h4>
+          <%= "#{similar_rating.subject_link} - #{similar_rating.rank} tags in common".html_safe %><br>
         <% end %>
-
-      </div>
     <% end %>
+    <% end %>
+
+     </div>
 
   </div>
 </div>

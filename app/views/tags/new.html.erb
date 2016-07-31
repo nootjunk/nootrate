@@ -1,5 +1,6 @@
 <%- model_class = Tag -%>
-<h1 align='center'>Add new tag</h1>
+<% title "Create new tag" %>
+<h1 align='center'>Create new tag</h1>
 
 <%= form_for @tag, :action => "create", :html => {:class => "ui form"} do |f| %>
   

@@ -1,4 +1,5 @@
 <%- model_class = Subject -%>
+<% title "Subjects" %>
 <% alpha = params.has_key?(:alpha) ? (("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".include? params[:alpha]) ? params[:alpha] : "") : "" %>
 <% sorton = params.has_key?(:sorton) ? ((['subject', 'vote'].member? params[:sorton]) ? params[:sorton] : 'tag_name') : 'tag_name' %>
 <% tags = params.has_key?(:tags) ? params[:tags].split(%r{,\s*}).map(&:to_i) : [] %>
@@ -79,5 +80,8 @@
         </div>
       <% end %>
     </div>
+
+  <a href="subjects/new" class="ui teal labeled icon button">Create New Subject<i class="add icon"></i></a>
+
   </div>
 </div>
